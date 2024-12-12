@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arah Kiblat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Arah Kiblat</h1>
+        <label for="latitude">Lintang Lokasi (°)</label>
+        <input type="number" id="latitude" placeholder="Contoh: -6.2000">
+        <label for="longitude">Bujur Lokasi (°)</label>
+        <input type="number" id="longitude" placeholder="Contoh: 106.8167">
+        <button onclick="calculateQibla()">Hitung Arah Kiblat</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        function calculateQibla() {
+            // Koordinat Ka'bah
+            const kaabaLat = 21.4225; // Lintang Ka'bah
+            const kaabaLon = 39.8262; // Bujur Ka'bah
+
+            // Input dari pengguna
+            const userLat = parseFloat(document.getElementById("latitude").value);
+            const userLon = parseFloat(document.getElementById("longitude").value);
+
+            if (isNaN(userLat) || isNaN(userLon)) {
+                document.getElementById("result").textContent = "Silakan masukkan koordinat yang valid.";
+                return;
+            }
+
+            // Konversi derajat ke radian
+            const toRadians = (deg) => (deg * Math.PI) / 180;
+
+            // Konversi ke radian
+            const lat1 = toRadians(userLat);
+            const lon1 = toRadians(userLon);
+            const lat2 = toRadians(kaabaLat);
+            const lon2 = toRadians(kaabaLon);
+
+            // Rumus trigonometri bola untuk menghitung arah kiblat
+            const deltaLon = lon2 - lon1;
+            const x = Math.cos(lat2) * Math.sin(deltaLon);
+            const y =
+                Math.cos(lat1) * Math.sin(lat2) -
+                Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+
+            const qiblaAngle = Math.atan2(x, y); // Dalam radian
+            const qiblaDegree = (qiblaAngle * 180) / Math.PI; // Dalam derajat
+
+            // Pastikan hasil dalam rentang 0-360 derajat
+            const qiblaDirection = (qiblaDegree + 360) % 360;
+
+            // Tampilkan hasil
+            document.getElementById("result").textContent =
+                "Arah Kiblat: " + qiblaDirection.toFixed(2) + "° dari Utara.";
+        }
+    </script>
+</body>
+</html>
